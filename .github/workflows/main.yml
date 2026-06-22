@@ -1,0 +1,30 @@
+name: Build macOS App
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas openpyxl fpdf customtkinter tkcalendar pyinstaller
+
+      - name: Empaquetar con PyInstaller
+        run: |
+          pyinstaller --noconsole --onefile --name="RaconAsistencia" 18.py
+
+      - name: Subir el ejecutable como artefacto
+        uses: actions/upload-artifact@v3
+        with:
+          name: RaconAsistencia-macOS
+          path: dist/RaconAsistencia
